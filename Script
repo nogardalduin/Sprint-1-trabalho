@@ -1,0 +1,87 @@
+Roteador 1
+
+en
+conf t
+hostname R1
+banner motd "Roteador 1 - Grupo 5"
+enable secret cisco 
+enable password cisco 
+line console 0
+password cisco
+login
+exit
+service password-encryption
+int g0/0
+no shutdown
+int g0/0.10
+encapsulation dot1Q 10
+ip add 172.20.6.1 255.255.255.192
+desc SUBINTERFACE VLAN 10
+int g0/0.20
+encapsulation dot1Q 20
+ip add 172.20.5.129 255.255.255.128
+desc SUBINTERFACE VLAN 20
+int g0/0.30
+encapsulation dot1Q 30 
+ip add 172.20.5.1 255.255.255.128
+desc SUBINTERFACE VLAN 30
+exit
+ip domain-name senai.local
+crypto key generate rsa general-keys modulus 1024
+username GRUPO5 privilege 15 secret cisco
+line vty 0 15
+transport input ssh
+login local 
+exit
+do wr
+
+
+SW1
+
+en 
+conf t
+hostname SW
+banner motd "Switch - Grupo 5"
+enable password cisco
+enable secret cisco
+line console 0
+password cisco
+login
+exit
+service password-encryption
+vlan 10
+name VLAN10
+vlan 20
+name VLAN20
+vlan 30
+name VLAN30
+int Fa0/1
+switchport mode access
+switchport access vlan 10
+desc VLAN10
+int Fa0/6
+switchport mode access
+switchport access vlan 20
+desc VLAN20
+int Fa0/11
+switchport mode access
+switchport access vlan 30
+desc VLAN30
+int f0/24
+switchport mode trunk
+switchport trunk allowed vlan 10,20,30
+exit
+ip domain-name senai.local
+crypto key generate rsa general-keys modulus 1024
+username GRUPO5 privilege 15 secret cisco
+line vty 0 15
+transport input ssh
+login local
+exit
+int vlan 10
+ip add 172.20.6.62 255.255.255.192
+int vlan 20
+ip add 172.20.5.254 255.255.255.128
+int vlan 30
+ip add 172.20.5.126 255.255.255.128
+do wr
